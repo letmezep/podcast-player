@@ -2,6 +2,21 @@ const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
 
 const podcastsList = document.querySelector(".podcasts-list");
 let podcasts = [];
+const searchInput = document.querySelector(".search-input");
+
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim().toLowerCase();
+
+  if (query === "") {
+    renderPodcastList(podcasts);
+    return;
+  }
+
+  const filtered = podcasts.filter((podcast) =>
+    podcast.title.toLowerCase().includes(query),
+  );
+  renderPodcastList(filtered);
+});
 
 function createPodcastCard(podcast) {
   return `
@@ -15,8 +30,10 @@ function createPodcastCard(podcast) {
   `;
 }
 
-function createPodcastList() {
-  podcasts.forEach((podcast) => {
+function renderPodcastList(list) {
+  podcastsList.innerHTML = "";
+
+  list.forEach((podcast) => {
     podcastsList.insertAdjacentHTML("beforeend", createPodcastCard(podcast));
   });
 }
@@ -40,7 +57,7 @@ async function getPodcasts(page = 1) {
     const data = await response.json();
     podcasts = data.podcasts;
 
-    createPodcastList();
+    renderPodcastList(podcasts);
   } catch (error) {
     console.log("error: ", error);
   }
