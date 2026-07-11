@@ -3,6 +3,24 @@ const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
 const podcastsList = document.querySelector(".podcasts-list");
 let podcasts = [];
 
+function createPodcastCard(podcast) {
+  return `
+    <figure class="podcast-card">
+        <img src="${podcast.image}" alt="podcast image">
+        <figcaption>
+            <h3>${podcast.title}</h3>        
+            <p>${podcast.publisher}</p>
+        </figcaption>
+    </figure>
+  `;
+}
+
+function createPodcastList() {
+  podcasts.forEach((podcast) => {
+    podcastsList.insertAdjacentHTML("beforeend", createPodcastCard(podcast));
+  });
+}
+
 async function getPodcasts(page = 1) {
   try {
     const response = await fetch(
@@ -29,18 +47,3 @@ async function getPodcasts(page = 1) {
 }
 
 getPodcasts();
-
-function createPodcastCard(podcast) {
-  return `
-    <div class="podcast-card">
-        <h3>${podcast.title}</h3>
-        <img src="${podcast.image}">
-        <p>${podcast.publisher}</p>
-    </div>`;
-}
-
-function createPodcastList() {
-  podcasts.forEach((podcast) => {
-    podcastsList.insertAdjacentHTML("beforeend", createPodcastCard(podcast));
-  });
-}
