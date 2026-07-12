@@ -1,38 +1,12 @@
-const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
+import { initSearch } from "./src/search.js";
 
+const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
 const podcastsList = document.querySelector(".podcasts-list");
-let podcasts = [];
 const searchInput = document.querySelector(".search-input");
 const searchLoading = document.querySelector(".search-indicator");
+let podcasts = [];
 
-function debounce(fn, delay = 400) {
-  let timeout;
-
-  return (...args) => {
-    clearTimeout(timeout);
-
-    timeout = setTimeout(() => {
-      fn(...args);
-    }, delay);
-  };
-}
-
-const handleSearch = debounce(() => {
-  const query = searchInput.value.trim().toLowerCase();
-
-  if (!query) {
-    renderPodcastList(podcasts);
-    return;
-  }
-
-  const filtered = podcasts.filter((podcast) =>
-    podcast.title.toLowerCase().includes(query),
-  );
-
-  renderPodcastList(filtered);
-}, 400);
-
-searchInput.addEventListener("input", handleSearch);
+initSearch(searchInput, () => podcasts, renderPodcastList);
 
 function createPodcastCard(podcast) {
   return `
