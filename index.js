@@ -4,10 +4,22 @@ const podcastsList = document.querySelector(".podcasts-list");
 let podcasts = [];
 const searchInput = document.querySelector(".search-input");
 
-searchInput.addEventListener("input", () => {
+function debounce(fn, delay = 400) {
+  let timeout;
+
+  return (...args) => {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
+const handleSearch = debounce(() => {
   const query = searchInput.value.trim().toLowerCase();
 
-  if (query === "") {
+  if (!query) {
     renderPodcastList(podcasts);
     return;
   }
@@ -15,8 +27,11 @@ searchInput.addEventListener("input", () => {
   const filtered = podcasts.filter((podcast) =>
     podcast.title.toLowerCase().includes(query),
   );
+
   renderPodcastList(filtered);
-});
+}, 400);
+
+searchInput.addEventListener("input", handleSearch);
 
 function createPodcastCard(podcast) {
   return `
