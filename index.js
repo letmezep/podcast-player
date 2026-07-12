@@ -3,6 +3,7 @@ const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
 const podcastsList = document.querySelector(".podcasts-list");
 let podcasts = [];
 const searchInput = document.querySelector(".search-input");
+const searchLoading = document.querySelector(".search-indicator");
 
 function debounce(fn, delay = 400) {
   let timeout;
@@ -54,6 +55,7 @@ function renderPodcastList(list) {
 }
 
 async function getPodcasts(page = 1) {
+  searchLoading.classList.remove("hidden");
   try {
     const response = await fetch(
       `${BASE_URL}/best_podcasts?sort=recent_published_first&page=${page}`,
@@ -75,6 +77,8 @@ async function getPodcasts(page = 1) {
     renderPodcastList(podcasts);
   } catch (error) {
     console.log("error: ", error);
+  } finally {
+    searchLoading.classList.add("hidden");
   }
 }
 
