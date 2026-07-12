@@ -2,7 +2,6 @@ import { initSearch } from "./src/search.js";
 import { initRouter } from "./src/router.js";
 
 const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
-// const podcastsList = document.querySelector(".podcasts-list");
 const app = document.querySelector("#app");
 const searchInput = document.querySelector(".search-input");
 const searchLoading = document.querySelector(".search-indicator");
@@ -25,28 +24,42 @@ function createPodcastCard(podcast) {
 
 function openPodcast(id) {
   location.hash = `podcast/${id}`;
-
-  // renderPodcastPage(id);
 }
 
-function renderPodcastPage(id) {
-  const podcast = podcasts.find((item) => item.id === id);
+async function renderPodcastPage(id) {
+  try {
+    const podcast = await getPodcastDetails(id);
 
-  if (!podcast) return;
+    app.innerHTML = `
+        <div class="details-box">
+          <button class="back-btn">← Back</button>
 
-  app.innerHTML = `
-      <button class="back-btn">← Back</button>
+          <div class="details-card">
+            <img src="${podcast.image}" alt="${podcast.title}">
 
-      <img src="${podcast.image}" alt="${podcast.title}">
+            <div class="details-info">
+              <h2>${podcast.title}</h2>
 
-      <h2>${podcast.title}</h2>
+              <p>${podcast.publisher}</p>
+            </div>
+          </div>
 
-      <p>${podcast.publisher}</p>
-  `;
+          <div class="episodes"></div>
+        </div>
+      `;
 
-  document.querySelector(".back-btn").addEventListener("click", () => {
-    history.back();
-  });
+    const episodes = document.querySelector(".episodes");
+
+    podcast.episodes.forEach((episode) => {
+      episodes.insertAdjacentHTML("beforeend", createEpisodeCard(episode));
+    });
+
+    document.querySelector(".back-btn").addEventListener("click", () => {
+      history.back();
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function renderPodcastList(list) {
@@ -65,6 +78,46 @@ function renderPodcastList(list) {
       openPodcast(card.dataset.id);
     });
   });
+}
+
+function formatDuration(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+
+  if (h > 0) {
+    return `${h}h ${m}m`;
+  }
+
+  return `${m}m`;
+}
+
+function createEpisodeCard(episode) {
+  return `
+  <article class="episode-card">
+    <h3>${episode.title}</h3>
+
+    <p>
+      ${new Date(episode.pub_date_ms).toLocaleDateString()}
+    </p>
+
+    <p>
+      ${formatDuration(episode.audio_length_sec)}
+    </p>
+  </article>`;
+}
+
+async function getPodcastDetails(id) {
+  const response = await fetch(`${BASE_URL}/podcasts/${id}`, {
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(response.status);
+  }
+
+  return response.json();
 }
 
 async function getPodcasts(page = 1) {
@@ -86,9 +139,8 @@ async function getPodcasts(page = 1) {
 
     const data = await response.json();
     podcasts = data.podcasts;
-    // console.log(podcasts);
 
-    // renderPodcastList(podcasts);
+    console.log("podcasts: ", podcasts);
     if (!location.hash) {
       renderPodcastList(podcasts);
     } else {
