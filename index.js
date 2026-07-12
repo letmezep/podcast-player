@@ -1,12 +1,15 @@
 import { initSearch } from "./src/search.js";
+import { initRouter } from "./src/router.js";
 
 const BASE_URL = "https://listen-api-test.listennotes.com/api/v2";
-const podcastsList = document.querySelector(".podcasts-list");
+// const podcastsList = document.querySelector(".podcasts-list");
+const app = document.querySelector("#app");
 const searchInput = document.querySelector(".search-input");
 const searchLoading = document.querySelector(".search-indicator");
 let podcasts = [];
 
 initSearch(searchInput, () => podcasts, renderPodcastList);
+initRouter(() => renderPodcastList(podcasts), renderPodcastPage);
 
 function createPodcastCard(podcast) {
   return `
@@ -21,9 +24,9 @@ function createPodcastCard(podcast) {
 }
 
 function openPodcast(id) {
-  history.pushState({ podcastId: id }, "", `/podcast/${id}`);
+  location.hash = `podcast/${id}`;
 
-  renderPodcastPage(id);
+  // renderPodcastPage(id);
 }
 
 function renderPodcastPage(id) {
@@ -31,7 +34,7 @@ function renderPodcastPage(id) {
 
   if (!podcast) return;
 
-  document.querySelector("main").innerHTML = `
+  app.innerHTML = `
       <button class="back-btn">← Back</button>
 
       <img src="${podcast.image}" alt="${podcast.title}">
@@ -47,7 +50,11 @@ function renderPodcastPage(id) {
 }
 
 function renderPodcastList(list) {
-  podcastsList.innerHTML = "";
+  app.innerHTML = `
+  <div class="podcasts-list"></div>
+  `;
+
+  const podcastsList = app.querySelector(".podcasts-list");
 
   list.forEach((podcast) => {
     podcastsList.insertAdjacentHTML("beforeend", createPodcastCard(podcast));
@@ -79,9 +86,14 @@ async function getPodcasts(page = 1) {
 
     const data = await response.json();
     podcasts = data.podcasts;
-    console.log(podcasts);
+    // console.log(podcasts);
 
-    renderPodcastList(podcasts);
+    // renderPodcastList(podcasts);
+    if (!location.hash) {
+      renderPodcastList(podcasts);
+    } else {
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    }
   } catch (error) {
     console.log("error: ", error);
   } finally {
