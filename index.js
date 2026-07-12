@@ -36,7 +36,7 @@ searchInput.addEventListener("input", handleSearch);
 
 function createPodcastCard(podcast) {
   return `
-    <figure class="podcast-card">
+    <figure class="podcast-card" data-id="${podcast.id}">
         <img src="${podcast.image}" alt="podcast image">
         <figcaption>
             <h3>${podcast.title}</h3>        
@@ -46,11 +46,43 @@ function createPodcastCard(podcast) {
   `;
 }
 
+function openPodcast(id) {
+  history.pushState({ podcastId: id }, "", `/podcast/${id}`);
+
+  renderPodcastPage(id);
+}
+
+function renderPodcastPage(id) {
+  const podcast = podcasts.find((item) => item.id === id);
+
+  if (!podcast) return;
+
+  document.querySelector("main").innerHTML = `
+      <button class="back-btn">← Back</button>
+
+      <img src="${podcast.image}" alt="${podcast.title}">
+
+      <h2>${podcast.title}</h2>
+
+      <p>${podcast.publisher}</p>
+  `;
+
+  document.querySelector(".back-btn").addEventListener("click", () => {
+    history.back();
+  });
+}
+
 function renderPodcastList(list) {
   podcastsList.innerHTML = "";
 
   list.forEach((podcast) => {
     podcastsList.insertAdjacentHTML("beforeend", createPodcastCard(podcast));
+  });
+
+  document.querySelectorAll(".podcast-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      openPodcast(card.dataset.id);
+    });
   });
 }
 
@@ -73,6 +105,7 @@ async function getPodcasts(page = 1) {
 
     const data = await response.json();
     podcasts = data.podcasts;
+    console.log(podcasts);
 
     renderPodcastList(podcasts);
   } catch (error) {
