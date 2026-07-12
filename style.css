@@ -146,13 +146,25 @@ main {
   width: 100%;
   padding: 10px 15px;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 20px;
   border-radius: 9px;
 }
 
 .episode-card:hover {
-  cursor: pointer;
   background: gray;
+}
+
+.play-btn {
+  width: 35px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.play-btn:hover {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 1180px) {

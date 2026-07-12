@@ -29,7 +29,6 @@ function openPodcast(id) {
 }
 
 function renderPodcastList(list) {
-  document.querySelector("header").classList.remove("hidden");
   app.innerHTML = `
   <div class="podcasts-list"></div>
   `;
@@ -48,8 +47,6 @@ function renderPodcastList(list) {
 }
 
 async function loadPodcasts() {
-  searchLoading.classList.remove("hidden");
-
   try {
     const data = await getPodcasts();
 
@@ -63,7 +60,6 @@ async function loadPodcasts() {
   } catch (error) {
     console.error(error);
   } finally {
-    searchLoading.classList.add("hidden");
   }
 }
 

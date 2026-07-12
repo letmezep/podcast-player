@@ -1,4 +1,6 @@
 import { getPodcastDetails } from "./api.js";
+import { playEpisode } from "./player.js";
+
 const app = document.querySelector("#app");
 
 function formatDuration(seconds) {
@@ -18,6 +20,10 @@ export function createEpisodeCard(episode) {
   <article class="episode-card">
     <h3>${episode.title}</h3>
 
+    <button class="play-btn" data-id="${episode.id}">
+      ▶
+    </button>
+
     <p>
       ${new Date(episode.pub_date_ms).toLocaleDateString()}
     </p>
@@ -30,8 +36,6 @@ export function createEpisodeCard(episode) {
 
 export async function renderPodcastPage(id) {
   const header = document.querySelector("header");
-
-  header.classList.add("hidden");
 
   try {
     const details = await getPodcastDetails(id);
@@ -59,6 +63,16 @@ export async function renderPodcastPage(id) {
 
     details.episodes.forEach((episode) => {
       episodes.insertAdjacentHTML("beforeend", createEpisodeCard(episode));
+    });
+
+    const buttons = app.querySelectorAll(".play-btn");
+
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        playEpisode(details.episodes[index], button);
+      });
     });
 
     app.querySelector(".back-btn").addEventListener("click", () => {
