@@ -51,7 +51,8 @@ header {
   font-size: 16px;
 }
 
-.hidden {
+.hidden,
+.player.hidden {
   display: none;
 }
 
