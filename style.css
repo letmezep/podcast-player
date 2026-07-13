@@ -17,10 +17,20 @@ body {
   gap: 40px;
   width: 100%;
   max-width: 1280px;
-  margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
   padding: 0 40px;
+}
+
+header {
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  padding: 10px 40px;
+
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .search-box {
@@ -56,8 +66,10 @@ body {
   font-size: 16px;
 }
 
-main {
+#app {
   width: 100%;
+  margin-top: 100px;
+  margin-bottom: 100px;
   display: flex;
   justify-content: center;
 }
@@ -165,6 +177,21 @@ main {
 
 .play-btn:hover {
   cursor: pointer;
+}
+
+.player {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  padding: 10px 40px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background: rgba(255, 255, 255, 0.9);
 }
 
 @media screen and (max-width: 1180px) {
