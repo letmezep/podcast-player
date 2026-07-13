@@ -39,7 +39,6 @@ export async function renderPodcastPage(id) {
 
   try {
     const details = await getPodcastDetails(id);
-    console.log("details: ", details);
 
     app.innerHTML = `
         <div class="details-box">

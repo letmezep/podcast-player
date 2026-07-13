@@ -63,5 +63,4 @@ async function loadPodcasts() {
   }
 }
 
-console.log("app: ", app);
 loadPodcasts();
