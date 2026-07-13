@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letmezep Podcast Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <header>
+            <div class="search-box">
+                <input class="search-input" type="search" name="search-field" id="" placeholder="Search...">
+
+                <span class="search-indicator hidden">
+                    Searching...
+                </span>
+            </div>
+        </header>
+
+        <main id="app">
+
+        </main>
+
+        <footer class="player hidden">
+            <div class="player__box">
+                <span class="player__title"></span>
+            </div>
+
+            <audio id="audio-player" controls></audio>
+        </footer>
+
+    </div>
+
+
+    <script type="module" src="index.js"></script>
+
+</body>
+
+</html>
